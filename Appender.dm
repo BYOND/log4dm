@@ -17,6 +17,24 @@ Appender
 
 		getLayout() return layout
 
+	ChattersAppender
+		New(Layout/_layout)
+			layout = _layout
+
+			..()
+
+		append(log, level, name, format = TRUE)
+			..()
+
+			if(format) log = layout.formatLog(log, level, name)
+
+			var
+				time = time2text(world.realtime, "MM-DD-YYYY")
+
+			text2file(log, "./data/logs/[time].html")
+
+			return log
+
 	FileAppender
 		var/output_file = ""
 
