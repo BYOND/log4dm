@@ -92,13 +92,6 @@ Logger
 				var/Logger/logger = loggers[name]
 				if(logger.additivity) logger.removeAppender(appender)
 
-		chattersConfig()
-			var
-				Layout/HTMLLayout/html_layout = new
-				Appender/ChattersAppender/appender = new(html_layout)
-
-			addAppender(appender)
-
 		htmlFileConfig(file)
 			ASSERT(file)
 
