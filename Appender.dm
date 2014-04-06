@@ -17,24 +17,6 @@ Appender
 
 		getLayout() return layout
 
-	ChattersAppender
-		New(Layout/_layout)
-			layout = _layout
-
-			..()
-
-		append(log, level, name, format = TRUE)
-			..()
-
-			if(format) log = layout.formatLog(log, level, name)
-
-			var
-				time = time2text(world.realtime, "MM-DD-YYYY")
-
-			text2file(log, "./data/logs/[time].html")
-
-			return log
-
 	FileAppender
 		var/output_file = ""
 
@@ -55,6 +37,18 @@ Appender
 		proc
 			setOutputFile(_output_file) output_file = _output_file
 			getOutputFile() return output_file
+
+		DailyFileAppender
+			append(log, level, name, format = TRUE)
+				..()
+
+				if(format) log = layout.formatLog(log, level, name)
+
+				var
+					time = time2text(world.realtime, "MM-DD-YYYY")
+
+				text2file(log, "[output_file]/[time].html")
+				return log
 
 	WorldLogAppender
 		append(log, level, name,  format = TRUE)
