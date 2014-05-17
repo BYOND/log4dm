@@ -27,10 +27,14 @@ Appender
 			..()
 
 		append(log, level, name, format = TRUE)
-			..()
+			..(log, level, name, format)
 
 			if(format) log = layout.formatLog(log, level, name)
-			if(output_file) text2file(log, output_file)
+			if(output_file)
+				if (!fexists(output_file))
+					var/preamble = layout.formatLog(layout.startLog(),  0, "")
+					text2file(preamble, output_file)
+				text2file(log, output_file)
 
 			return log
 
@@ -40,19 +44,17 @@ Appender
 
 		DailyFileAppender
 			append(log, level, name, format = TRUE)
-				..()
+				var/set_output = output_file
+				var/time = time2text(world.realtime, "YYYY-MM-DD")
+				output_file = "[set_output]/[time].[layout.getFileExtension()]"
+				..(log, level, name, format)
+				output_file = set_output
 
-				if(format) log = layout.formatLog(log, level, name)
-
-				var
-					time = time2text(world.realtime, "MM-DD-YYYY")
-
-				text2file(log, "[output_file]/[time].html")
 				return log
 
 	WorldLogAppender
 		append(log, level, name,  format = TRUE)
-			..()
+			..(log, level, name,  format)
 
 			if(format) log = layout.formatLog(log, level, name)
 			world.log << log

@@ -3,6 +3,7 @@ Layout
 		formatLog(log, level, name)
 		startLog()
 		endLog()
+		getFileExtension()
 
 	PlaintextLayout
 		startLog() return "Logging started at [time2text(world.timeofday)]"
@@ -14,6 +15,8 @@ Layout
 				return log
 
 		endLog() return "Logging ended at [time2text(world.timeofday)]"
+
+		getFileExtension() return "log"
 
 	HTMLLayout
 		startLog() return {"
@@ -50,3 +53,5 @@ Layout
 			return log
 
 		endLog() return "</table><i>Logging ended at [time2text(world.timeofday)]</i><hr>"
+
+		getFileExtension() return "html"
