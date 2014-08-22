@@ -58,3 +58,36 @@ Appender
 
 			if(format) log = layout.formatLog(log, level, name)
 			world.log << log
+
+	SQLiteAppender
+		var/database_file = ""
+
+		New(Layout/_layout, _database_file)
+			layout = _layout
+			database_file = _database_file
+			//if layout is missing, we need to create it for the extention.
+			if(!layout) layout = new/Layout/SQLiteLayout
+
+
+			var/database/database_db = new("[database_file].[layout.getFileExtension()]")
+			var/database/query/query = new("CREATE TABLE IF NOT EXISTS logs (Id INTEGER PRIMARY KEY ASC, LogName TEXT, GmtDateTime INTEGER, Uptime INTEGER, Level INTEGER, LevelDescription TEXT, Message TEXT)")
+			if(!query.Execute(database_db))
+				CRASH(query.ErrorMsg())
+			..()
+		append(log, level, name,  format = TRUE)
+			//call the parent anyway - to capture any future changes that may be
+			//added
+			..(log, level, name, format)
+			//must use format for SQLite, so ignore format the param.
+			var/list/fields = layout.formatLog(log, level, name)
+			var/database/database_db = new("[database_file].[layout.getFileExtension()]")
+
+			var/database/query/query = new("INSERT INTO logs (LogName,GmtDateTime,Uptime,Level,LevelDescription,Message) VALUES (?, CURRENT_TIMESTAMP, ?, ?, ?, ?)"
+			                              ,fields["LogName"]
+			                              ,fields["Uptime"]
+			                              ,fields["Level"]
+			                              ,fields["LevelDescription"]
+			                              ,fields["Message"])
+
+			if(!query.Execute(database_db))
+				CRASH(query.ErrorMsg())
