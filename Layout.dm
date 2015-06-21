@@ -1,9 +1,29 @@
 Layout
 	proc
 		formatLog(log, level, name)
-		startLog()
-		endLog()
+		startLog(name)
+		endLog(name)
 		getFileExtension()
+
+	SQLiteLayout
+		startLog() return "Logging has started."
+
+		formatLog(log, level, name = "root")
+			if(log)
+				return getFields(log, level, name)
+
+		endLog() return "Logging has ended."
+
+		getFileExtension() return "sqlite"
+
+		proc/getFields(log, level, name)
+			. = list()
+			.["LogName"] = "[name]"
+			.["GmtDateTime"] = null
+			.["Uptime"] = "[world.time]"
+			.["Level"] = "[level]"
+			.["LevelDescription"] = "[level2text(level)]"
+			.["Message"] = "[log]"
 
 	PlaintextLayout
 		startLog() return "Logging started at [time2text(world.timeofday)]"

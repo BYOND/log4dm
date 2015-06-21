@@ -116,3 +116,11 @@ Logger
 				Appender/WorldLogAppender/worldlog_appender = new(plaintext_layout)
 
 			addAppender(worldlog_appender)
+
+		SQLiteConfig(file)
+			ASSERT(file)
+			var
+				Layout/SQLiteLayout/SQLiteLayout = new
+				Appender/SQLiteAppender/SQLiteAppender = new(SQLiteLayout, file)
+
+			addAppender(SQLiteAppender)
